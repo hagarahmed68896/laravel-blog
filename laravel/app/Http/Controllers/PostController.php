@@ -11,25 +11,22 @@ use App\Http\Controllers\CommentController;
 use App\Jobs\runeOldPostsJob;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
-// use App\Http\Requests\StorePostRequest;
-// use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\StorePostRequest;
+
 
 class PostController extends Controller
 {
-    // display all posts
+
     public function index()
     {
-        dispatch(
-            new runeOldPostsJob(
-                Date::now()->subDays(365 * 2)
-            ));
+
         $allPosts = Post::paginate(6);
         return view('posts.index',[
             'posts' => $allPosts,
         ]);
     }
 
-// to create a new post
+
     public function create()
     {
         $users = User::get();
@@ -39,14 +36,9 @@ class PostController extends Controller
         ]);
     }
 
-//  to store a new post in database
-    public function store(Request $request)
+
+    public function store(StorePostRequest $request)
     {
-        // add validation rules 
-           $request->validate([
-           'title'=>['required','min:3','unique:posts,title'],
-           'description'=>['required','min:10'],
-        ]);
 
         // upload image to storage
         if ($request->exists('image')) {   
@@ -65,21 +57,21 @@ class PostController extends Controller
         return to_route('posts.index');
     }
 
-//  to show a post in database
+
     public function show($postId)
     {
         $post = Post::find($postId);
         return view('posts.show',['post' => $post]);
     }
 
-// to find a cetain post for editing in database
+
     public function edit($postId)
     {
        $post = Post::find($postId);
         return view("posts.edit", ['post' => $post]);
     }
 
-// to update that post in database
+
     public function update($postId, Request $request)
     {
         $newPost = $request->all();
@@ -89,7 +81,6 @@ class PostController extends Controller
             'title'=>['required','min:3','unique:posts,title,'. $postId],
             'description'=>['required','min:10'],
             'user_id'=>[Rule::in('post_creator','user_id')],
-
         ]);
         $post = Post::find($postId);
          // upload image to storage
@@ -114,9 +105,10 @@ class PostController extends Controller
             return redirect()->route('posts.index');
         }
     
-// to delete that post from database(soft delete)
+
     public function destroy($postId)
     {
+    // {  dd($postId);
         Post::find($postId)->delete();
         return back();
     }

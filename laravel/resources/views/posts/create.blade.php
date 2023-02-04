@@ -6,18 +6,18 @@
 
 @section('content')
 
-    {{-- add validation messages --}}
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
    <div class="container">
     <div class="row">
+            {{-- add validation messages --}}
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <div style="text-align: center">
             <h1>Add New Post</h1>
         </div>     
