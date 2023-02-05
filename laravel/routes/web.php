@@ -3,7 +3,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
-
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,21 +44,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-use Laravel\Socialite\Facades\Socialite;
- 
-Route::get('/auth/redirect', function () {
-    return Socialite::driver('github')->redirect();
-});
- 
-Route::get('/auth/callback', function () {
-    $user = Socialite::driver('github')->user();
-    $user = User::updateOrCreate([
-        'user_id' => $githubUser->id,
-    ], [
-        'name' => $githubUser->name,
-        'email' => $githubUser->email,
-        'github_token' => $githubUser->token,
-        'github_refresh_token' => $githubUser->refreshToken,
-    ]);
-    // $user->token
-});
+
+Route::get('/auth/github/redirect',[PostController::class,'githubredirect'])->name('githublogin');
+Route::get('/auth/github/callback',[PostController::class,'githubcallback']);
+
+Route::get('/auth/google/redirect',[PostController::class,'googleredirect'])->name('googlelogin');
+Route::get('/auth/google/callback',[PostController::class,'googlecallback']);
